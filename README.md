@@ -1,29 +1,26 @@
-# WBITT Network-Multitool (Formerly `praqma/Network-MultiTool`)
+# Network-Multitool (Formerly `praqma/Network-MultiTool`)
 
 A (**multi-arch**) multitool for container/network testing and troubleshooting. The main docker image is based on Alpine Linux. There is a Fedora variant to be used in environments which require the image to be based only on RedHat Linux, or any of it's derivatives.
 
 The container image contains lots of tools, as well as a `nginx` web server, which listens on port `80` and `443` by default. The web server helps to run this container-image in a straight-forward way, so you can simply `exec` into the container and use various tools.
 
-## Note about name/org change:
-In September 2016, I created this tool and maintained it with [Henrik](https://github.com/hoeghh) - as `praqma/network-multitool`. During 2020-2021 Praqma was bought by another company, and the new management did not want to promote the **"Praqma"** brand. This meant the network-multitool's git and docker repositories must go. It was decided by the representatives of the company at that time to hand over the ownership/maintenance of this project to me, so I can continue maintaining it. Apart from a small change in the repository name, nothing in the tool has changed. 
-
-The docker repository to pull this image is now: [https://hub.docker.com/r/wbitt/network-multitool](https://hub.docker.com/r/wbitt/network-multitool)
+The docker repository to pull this image is now: [https://hub.docker.com/r/azolotareff/network-multitool](https://hub.docker.com/r/azolotareff/network-multitool)
 
 Or:
 
 ```
-docker pull wbitt/network-multitool
+docker pull azolotareff/network-multitool
 ```
 
 
-## Supported platforms: 
+## Supported platforms:
 * linux/386
 * linux/amd64
 * linux/arm/v7
 * linux/arm64
 
-## Downloadable from Docker Hub: 
-* [https://hub.docker.com/r/wbitt/network-multitool](https://hub.docker.com/r/wbitt/network-multitool)  (An automated multi-arch build)
+## Downloadable from Docker Hub:
+* [https://hub.docker.com/r/azolotareff/network-multitool](https://hub.docker.com/r/azolotareff/network-multitool)  (An automated multi-arch build)
 
 ## Variants / image tags:
 * **latest**, minimal, alpine-minimal ( The main/default **'minimal'** image - Alpine based )
@@ -38,8 +35,8 @@ Openshift is very strict about how a container image should run. So, the **opens
 
 * Runs as non-root ; which means some tools (e.g. `traceroute`, `tcptraceroute`, etc, will not work)
 * Listens on ports `1180` and `11443` - **not** `80` and `443`
-* Some executable files are manually set as `setuid`, so those tools remain usable. Tools set with `setuid` are: 
-  * apk 
+* Some executable files are manually set as `setuid`, so those tools remain usable. Tools set with `setuid` are:
+  * apk
   * arping
   * busybox
   * mii-tool
@@ -49,7 +46,7 @@ Openshift is very strict about how a container image should run. So, the **opens
   * tshark
 
 Remember, this *multitool* is purely a troubleshooting tool, and should be used as such. It is not designed to abuse openshift (or any system's) security, nor should it be used to do so.
- 
+
 
 ## Tools included in "latest, minimal, alpine-minimal , openshift, openshift-minimal":
 * apk package manager
@@ -106,12 +103,12 @@ All tools from "minimal", plus:
 
 ------
 
-# How to use this image? 
+# How to use this image?
 ## How to use this image in normal **container/pod network** ?
 
 ### Docker:
 ```
-$ docker run  -d wbitt/network-multitool
+$ docker run  -d azolotareff/network-multitool
 ```
 
 Then:
@@ -125,12 +122,12 @@ $ docker exec -it container-name /bin/bash
 
 Create single pod - without a deployment:
 ```
-$ kubectl run multitool --image=wbitt/network-multitool
+$ kubectl run multitool --image=azolotareff/network-multitool
 ```
 
 Create a deployment:
 ```
-$ kubectl create deployment multitool --image=wbitt/network-multitool
+$ kubectl create deployment multitool --image=azolotareff/network-multitool
 ```
 
 Then:
@@ -146,7 +143,7 @@ $ kubectl exec -it pod-name /bin/bash
 ```
 $ oc new-project test-project-1
 
-$ oc new-app wbitt/network-multitool:openshift --name multitool-openshift
+$ oc new-app azolotareff/network-multitool:openshift --name multitool-openshift
 
 $ oc status
 
@@ -162,18 +159,18 @@ $ oc port-forward pod-name  1180:1180 11443:11443
 
 ## How to use this image on **host network** ?
 
-Sometimes you want to do testing using the **host network**.  This can be achieved by running the multitool using host networking. 
+Sometimes you want to do testing using the **host network**.  This can be achieved by running the multitool using host networking.
 
 
 ### Docker:
 ```
-$ docker run --network host -d wbitt/network-multitool
+$ docker run --network host -d azolotareff/network-multitool
 ```
 
 **Note:** If port 80 and/or 443 are already busy on the host, then use pass the extra arguments to multitool, so it can listen on a different port, as shown below:
 
 ```
-$ docker run --network host -e HTTP_PORT=1180 -e HTTPS_PORT=11443 -d wbitt/network-multitool
+$ docker run --network host -e HTTP_PORT=1180 -e HTTPS_PORT=11443 -d azolotareff/network-multitool
 ```
 
 ### Kubernetes:
@@ -209,7 +206,7 @@ Praqma Network MultiTool (with NGINX) - 4636efd4660c - 172.17.0.3/16 - HTTP: 118
 
 $ curl -k https://localhost:11443
 Praqma Network MultiTool (with NGINX) - 4636efd4660c - 172.17.0.3/16 - HTTP: 1180 , HTTPS: 11443
-```  
+```
 
 If these environment variables are absent/not-provided, the container will listen on normal/default ports 80 and 443.
 
@@ -217,22 +214,22 @@ If these environment variables are absent/not-provided, the container will liste
 
 # FAQs
 ## Why this multitool runs a web-server?
-Well, normally, if a container does not run a daemon/service, then running it (the container) involves using *creative ways / hacks* to keep it alive. If you don't want to suddenly start browsing the internet for "those creative ways", then it is best to run a small web server in the container - as the default process. 
+Well, normally, if a container does not run a daemon/service, then running it (the container) involves using *creative ways / hacks* to keep it alive. If you don't want to suddenly start browsing the internet for "those creative ways", then it is best to run a small web server in the container - as the default process.
 
 This helps you when you are using Docker. You simply execute:
 ```
-$ docker run  -d wbitt/network-multitool
+$ docker run  -d azolotareff/network-multitool
 ```
 
 This also helps when you are using kubernetes. You simply execute:
 ```
-$ kubectl run multitool --image=wbitt/network-multitool
+$ kubectl run multitool --image=azolotareff/network-multitool
 ```
 
 
 The multitool container starts as web server - so it remains `UP`. Then, you simply connect to it using:
 ```
-$ docker exec -it some-silly-container-name /bin/sh 
+$ docker exec -it some-silly-container-name /bin/sh
 ```
 
 Or, on Kubernetes:
@@ -244,7 +241,7 @@ This is why it is good to have a web-server in this tool. Hope this answers the 
 
 
 ## I can't find a tool I need for my use-case?
-We have tried to put in all the most commonly used tools, while keeping it small and practical. We can't have all the tools under the sun, otherwise it will end up as [something like this](https://www.amazon.ca/Wenger-16999-Swiss-Knife-Giant/dp/B001DZTJRQ).  
+We have tried to put in all the most commonly used tools, while keeping it small and practical. We can't have all the tools under the sun, otherwise it will end up as [something like this](https://www.amazon.ca/Wenger-16999-Swiss-Knife-Giant/dp/B001DZTJRQ).
 
 However, if you have a special need, for a special tool, for your special use-case, then I would recommend to simply build your own docker image using this one as base image, and expanding it with the tools you need.
 

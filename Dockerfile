@@ -1,6 +1,6 @@
 FROM alpine:3.18
 
-MAINTAINER Kamran Azeem & Henrik Høegh (kamranazeem@gmail.com, henrikrhoegh@gmail.com)
+LABEL org.opencontainers.image.authors="alexey.zolotareff@gmail.com"
 
 EXPOSE 80 443 1180 11443
 
@@ -40,8 +40,8 @@ CMD ["/usr/sbin/nginx", "-g", "daemon off;"]
 
 
 # Note: If you have not included the "bash" package, then it is "mandatory" to add "/bin/sh"
-#         in the ENTNRYPOINT instruction. 
-#       Otherwise you will get strange errors when you try to run the container. 
+#         in the ENTNRYPOINT instruction.
+#       Otherwise you will get strange errors when you try to run the container.
 #       Such as:
 #       standard_init_linux.go:219: exec user process caused: no such file or directory
 
@@ -57,27 +57,27 @@ ENTRYPOINT ["/bin/sh", "/docker/entrypoint.sh"]
 # Build and Push (to dockerhub) instructions:
 # -------------------------------------------
 # docker build -t local/network-multitool .
-# docker tag local/network-multitool praqma/network-multitool
+# docker tag local/network-multitool azolotareff/network-multitool
 # docker login
-# docker push praqma/network-multitool
+# docker push azolotareff/network-multitool
 
 
 # Pull (from dockerhub):
 # ----------------------
-# docker pull praqma/network-multitool
+# docker pull azolotareff/network-multitool
 
 
 # Usage - on Docker:
 # ------------------
-# docker run --rm -it praqma/network-multitool /bin/bash 
+# docker run --rm -it azolotareff/network-multitool /bin/bash
 # OR
-# docker run -d  praqma/network-multitool
+# docker run -d  azolotareff/network-multitool
 # OR
-# docker run -p 80:80 -p 443:443 -d  praqma/network-multitool
+# docker run -p 80:80 -p 443:443 -d  azolotareff/network-multitool
 # OR
-# docker run -e HTTP_PORT=1180 -e HTTPS_PORT=11443 -p 1180:1180 -p 11443:11443 -d  praqma/network-multitool
+# docker run -e HTTP_PORT=1180 -e HTTPS_PORT=11443 -p 1180:1180 -p 11443:11443 -d  azolotareff/network-multitool
 
 
 # Usage - on Kubernetes:
 # ---------------------
-# kubectl run multitool --image=praqma/network-multitool
+# kubectl run multitool --image=azolotareff/network-multitool
