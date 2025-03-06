@@ -1,4 +1,4 @@
-FROM alpine:3.21
+FROM alpine:3.21.3
 
 LABEL org.opencontainers.image.authors="alexey.zolotareff@gmail.com"
 
