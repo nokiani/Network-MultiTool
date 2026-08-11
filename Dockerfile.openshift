@@ -3,9 +3,10 @@
 # Reference: https://docs.openshift.com/container-platform/3.3/creating_images/guidelines.html#openshift-container-platform-specific-guidelines
 
 
-FROM alpine:3.22
+FROM alpine:3.23.5
 
-LABEL maintainer="Kamran Azeem & Henrik Høegh (kamranazeem@gmail.com, henrikrhoegh@gmail.com)"
+LABEL org.opencontainers.image.authors="Alexey Zolotarev, Kamran Azeem & Henrik Høegh (alexey.zolotareff@gmail.com, kamranazeem@gmail.com, henrikrhoegh@gmail.com)"
+LABEL org.opencontainers.image.description="Network multitool with various debugging utilities"
 
 
 # Using 1180 and 11443, and **not using 8080 or 8443**, 
@@ -116,28 +117,28 @@ ENTRYPOINT ["/bin/sh", "/docker/entrypoint.sh"]
 # Build and Push (to dockerhub) instructions:
 # -------------------------------------------
 # docker build -t local/network-multitool .
-# docker tag local/network-multitool praqma/network-multitool
+# docker tag local/network-multitool azolotareff/network-multitool
 # docker login
-# docker push praqma/network-multitool
+# docker push azolotareff/network-multitool
 
 
 # Pull (from dockerhub):
 # ----------------------
-# docker pull praqma/network-multitool
+# docker pull azolotareff/network-multitool
 
 
 # Usage - on Docker:
 # ------------------
-# docker run --rm -it praqma/network-multitool /bin/bash 
+# docker run --rm -it azolotareff/network-multitool /bin/bash 
 # OR
-# docker run -d  praqma/network-multitool
+# docker run -d  azolotareff/network-multitool
 # OR
-# docker run -p 80:80 -p 443:443 -d  praqma/network-multitool
+# docker run -p 80:80 -p 443:443 -d  azolotareff/network-multitool
 # OR
-# docker run -e HTTP_PORT=1180 -e HTTPS_PORT=11443 -p 1180:1180 -p 11443:11443 -d  praqma/network-multitool
+# docker run -e HTTP_PORT=1180 -e HTTPS_PORT=11443 -p 1180:1180 -p 11443:11443 -d  azolotareff/network-multitool
 
 
 # Usage - on Kubernetes:
 # ---------------------
-# kubectl run multitool --image=praqma/network-multitool --replicas=1
+# kubectl run multitool --image=azolotareff/network-multitool --replicas=1
 
