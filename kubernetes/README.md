@@ -1,7 +1,7 @@
 Running the multitool on Kubernetes using the POD network is as simple as:
 
 ```shell
-$ kubectl run nwtool --image wbitt/network-multitool
+$ kubectl run nwtool --image azolotareff/network-multitool
 ```
 
 This allows you to use the utilities from the multitool to test on the POD
