@@ -7,12 +7,12 @@ The container image contains lots of tools, as well as a `nginx` web server, whi
 ## Note about name/org change:
 In September 2016, I created this tool and maintained it with [Henrik](https://github.com/hoeghh) - as `praqma/network-multitool`. During 2020-2021 Praqma was bought by another company, and the new management did not want to promote the **"Praqma"** brand. This meant the network-multitool's git and docker repositories must go. It was decided by the representatives of the company at that time to hand over the ownership/maintenance of this project to me, so I can continue maintaining it. Apart from a small change in the repository name, nothing in the tool has changed. 
 
-The docker repository to pull this image is now: [https://hub.docker.com/r/wbitt/network-multitool](https://hub.docker.com/r/wbitt/network-multitool)
+The docker repository to pull this image is now: [https://hub.docker.com/r/azolotareff/network-multitool](https://hub.docker.com/r/azolotareff/network-multitool)
 
 Or:
 
 ```
-docker pull wbitt/network-multitool
+docker pull azolotareff/network-multitool
 ```
 
 
@@ -23,7 +23,7 @@ docker pull wbitt/network-multitool
 * linux/arm64
 
 ## Downloadable from Docker Hub: 
-* [https://hub.docker.com/r/wbitt/network-multitool](https://hub.docker.com/r/wbitt/network-multitool)  (An automated multi-arch build)
+* [https://hub.docker.com/r/azolotareff/network-multitool](https://hub.docker.com/r/azolotareff/network-multitool)  (An automated multi-arch build)
 
 ## Variants / image tags:
 * **latest**, minimal, alpine-minimal ( The main/default **'minimal'** image - Alpine based )
@@ -111,7 +111,7 @@ All tools from "minimal", plus:
 
 ### Docker:
 ```
-$ docker run  -d wbitt/network-multitool
+$ docker run  -d azolotareff/network-multitool
 ```
 
 Then:
@@ -125,12 +125,12 @@ $ docker exec -it container-name /bin/bash
 
 Create single pod - without a deployment:
 ```
-$ kubectl run multitool --image=wbitt/network-multitool
+$ kubectl run multitool --image=azolotareff/network-multitool
 ```
 
 Create a deployment:
 ```
-$ kubectl create deployment multitool --image=wbitt/network-multitool
+$ kubectl create deployment multitool --image=azolotareff/network-multitool
 ```
 
 Then:
@@ -146,7 +146,7 @@ $ kubectl exec -it pod-name /bin/bash
 ```
 $ oc new-project test-project-1
 
-$ oc new-app wbitt/network-multitool:openshift --name multitool-openshift
+$ oc new-app azolotareff/network-multitool:openshift --name multitool-openshift
 
 $ oc status
 
@@ -167,13 +167,13 @@ Sometimes you want to do testing using the **host network**.  This can be achiev
 
 ### Docker:
 ```
-$ docker run --network host -d wbitt/network-multitool
+$ docker run --network host -d azolotareff/network-multitool
 ```
 
 **Note:** If port 80 and/or 443 are already busy on the host, then use pass the extra arguments to multitool, so it can listen on a different port, as shown below:
 
 ```
-$ docker run --network host -e HTTP_PORT=1180 -e HTTPS_PORT=11443 -d wbitt/network-multitool
+$ docker run --network host -e HTTP_PORT=1180 -e HTTPS_PORT=11443 -d azolotareff/network-multitool
 ```
 
 ### Kubernetes:
@@ -221,12 +221,12 @@ Well, normally, if a container does not run a daemon/service, then running it (t
 
 This helps you when you are using Docker. You simply execute:
 ```
-$ docker run  -d wbitt/network-multitool
+$ docker run  -d azolotareff/network-multitool
 ```
 
 This also helps when you are using kubernetes. You simply execute:
 ```
-$ kubectl run multitool --image=wbitt/network-multitool
+$ kubectl run multitool --image=azolotareff/network-multitool
 ```
 
 
