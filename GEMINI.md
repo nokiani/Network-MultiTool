@@ -24,7 +24,7 @@ To run the container:
 
 ```bash
 # Run in detached mode
-docker run -d wbitt/network-multitool
+docker run -d azolotareff/network-multitool
 
 # Exec into the running container
 docker exec -it <container-name> /bin/bash
@@ -33,7 +33,7 @@ docker exec -it <container-name> /bin/bash
 To run with custom ports:
 
 ```bash
-docker run -e HTTP_PORT=8080 -e HTTPS_PORT=8443 -p 8080:8080 -p 8443:8443 -d wbitt/network-multitool
+docker run -e HTTP_PORT=8080 -e HTTPS_PORT=8443 -p 8080:8080 -p 8443:8443 -d azolotareff/network-multitool
 ```
 
 ### Kubernetes
