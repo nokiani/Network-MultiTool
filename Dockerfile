@@ -1,6 +1,7 @@
-FROM alpine:3.22
+FROM alpine:3.23.5
 
-LABEL maintainer="Kamran Azeem & Henrik Høegh (kamranazeem@gmail.com, henrikrhoegh@gmail.com)"
+LABEL org.opencontainers.image.authors="Alexey Zolotarev, Kamran Azeem & Henrik Høegh (alexey.zolotareff@gmail.com, kamranazeem@gmail.com, henrikrhoegh@gmail.com)"
+LABEL org.opencontainers.image.description="Network multitool with various debugging utilities"
 
 EXPOSE 80 443 1180 11443
 
@@ -8,10 +9,11 @@ EXPOSE 80 443 1180 11443
 # Packages are listed in alphabetical order, for ease of readability and ease of maintenance.
 RUN     apk update \
     &&  apk add --no-cache \
-                bash bind-tools busybox-extras curl \
+                bash bind-tools busybox-extras curl git \
                 iproute2 iputils jq mtr \
                 net-tools nginx openssh-client openssl \
-                perl-net-telnet procps rsync tcpdump tcptraceroute wget \
+                perl-net-telnet postgresql-client procps \
+                rsync tcpdump tcptraceroute wget \
     &&  rm -rf /var/cache/apk/* \
     &&  mkdir /certs /docker \
     &&  chmod 700 /certs \
@@ -19,6 +21,33 @@ RUN     apk update \
         -x509 -newkey rsa:2048 -nodes -days 3650 \
         -keyout /certs/server.key -out /certs/server.crt -subj '/CN=localhost'
 
+RUN ARCH=$(uname -m) && \
+    case "$ARCH" in \
+        x86_64) CH_ARCH="amd64" ;; \
+        aarch64) CH_ARCH="aarch64" ;; \
+        *) echo "Unsupported architecture: $ARCH" && exit 1 ;; \
+    esac && \
+    wget -O /usr/local/bin/clickhouse-client \
+        "https://builds.clickhouse.com/master/${CH_ARCH}/clickhouse" && \
+    chmod +x /usr/local/bin/clickhouse-client
+
+RUN git clone https://github.com/ClickHouse/libc-blobs.git -b master --depth=1 && \
+    ARCH=$(uname -m) && \
+    case "$ARCH" in \
+        aarch64) \
+            [ -f /lib/ld-linux-aarch64.so.1 ] && \
+                mv /lib/ld-linux-aarch64.so.1 /lib/ld-linux-aarch64.so.1.bak 2>/dev/null || true; \
+            cp -r libc-blobs/aarch64/lib/* /lib/ 2>/dev/null || true; \
+            ;; \
+        x86_64) \
+            mkdir -p /lib64; \
+            [ -f /lib64/ld-linux-x86-64.so.2 ] && \
+                mv /lib64/ld-linux-x86-64.so.2 /lib64/ld-linux-x86-64.so.2.bak 2>/dev/null || true; \
+            cp -r libc-blobs/x86_64/lib64/* /lib64/ 2>/dev/null || true; \
+            cp -r libc-blobs/x86_64/lib/* /lib/ 2>/dev/null || true; \
+            ;; \
+    esac && \
+    rm -rf libc-blobs
 
 # Copy a simple index.html to eliminate text (index.html) noise which comes with default nginx image.
 # (I created an issue for this purpose here: https://github.com/nginxinc/docker-nginx/issues/234)
@@ -61,27 +90,27 @@ ENTRYPOINT ["/bin/sh", "/docker/entrypoint.sh"]
 # Build and Push (to dockerhub) instructions:
 # -------------------------------------------
 # docker build -t local/network-multitool .
-# docker tag local/network-multitool praqma/network-multitool
+# docker tag local/network-multitool azolotareff/network-multitool
 # docker login
-# docker push praqma/network-multitool
+# docker push azolotareff/network-multitool
 
 
 # Pull (from dockerhub):
 # ----------------------
-# docker pull praqma/network-multitool
+# docker pull azolotareff/network-multitool
 
 
 # Usage - on Docker:
 # ------------------
-# docker run --rm -it praqma/network-multitool /bin/bash 
+# docker run --rm -it azolotareff/network-multitool /bin/bash 
 # OR
-# docker run -d  praqma/network-multitool
+# docker run -d  azolotareff/network-multitool
 # OR
-# docker run -p 80:80 -p 443:443 -d  praqma/network-multitool
+# docker run -p 80:80 -p 443:443 -d  azolotareff/network-multitool
 # OR
-# docker run -e HTTP_PORT=1180 -e HTTPS_PORT=11443 -p 1180:1180 -p 11443:11443 -d  praqma/network-multitool
+# docker run -e HTTP_PORT=1180 -e HTTPS_PORT=11443 -p 1180:1180 -p 11443:11443 -d  azolotareff/network-multitool
 
 
 # Usage - on Kubernetes:
 # ---------------------
-# kubectl run multitool --image=praqma/network-multitool
+# kubectl run multitool --image=azolotareff/network-multitool
