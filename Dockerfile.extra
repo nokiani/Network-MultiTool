@@ -65,8 +65,7 @@ RUN ARCH=$(uname -m) && \
     wget -O /usr/local/bin/clickhouse-client \
         "https://builds.clickhouse.com/master/${CH_ARCH}/clickhouse" && \
     chmod +x /usr/local/bin/clickhouse-client
-RUN git clone https://github.com/ClickHouse/libc-blobs.git -b master --depth=1 && \
-    ARCH=$(uname -m) && \
+RUN ARCH=$(uname -m) && \
     case "$ARCH" in \
         aarch64|x86_64) \
             git clone https://github.com/ClickHouse/libc-blobs.git -b master --depth=1 && \
