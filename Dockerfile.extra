@@ -60,7 +60,7 @@ RUN ARCH=$(uname -m) && \
     case "$ARCH" in \
         x86_64) CH_ARCH="amd64" ;; \
         aarch64) CH_ARCH="aarch64" ;; \
-        *) echo "Unsupported architecture: $ARCH" && exit 1 ;; \
+        *) echo "Unsupported architecture: $ARCH" && exit 0 ;; \
     esac && \
     wget -O /usr/local/bin/clickhouse-client \
         "https://builds.clickhouse.com/master/${CH_ARCH}/clickhouse" && \
@@ -68,18 +68,19 @@ RUN ARCH=$(uname -m) && \
 RUN git clone https://github.com/ClickHouse/libc-blobs.git -b master --depth=1 && \
     ARCH=$(uname -m) && \
     case "$ARCH" in \
-        aarch64) \
-            [ -f /lib/ld-linux-aarch64.so.1 ] && \
-                mv /lib/ld-linux-aarch64.so.1 /lib/ld-linux-aarch64.so.1.bak 2>/dev/null || true; \
-            cp -r libc-blobs/aarch64/lib/* /lib/ 2>/dev/null || true; \
-            ;; \
-        x86_64) \
-            mkdir -p /lib64; \
-            [ -f /lib64/ld-linux-x86-64.so.2 ] && \
-                mv /lib64/ld-linux-x86-64.so.2 /lib64/ld-linux-x86-64.so.2.bak 2>/dev/null || true; \
-            cp -r libc-blobs/x86_64/lib64/* /lib64/ 2>/dev/null || true; \
-            cp -r libc-blobs/x86_64/lib/* /lib/ 2>/dev/null || true; \
-            ;; \
+        aarch64|x86_64) \
+            git clone https://github.com/ClickHouse/libc-blobs.git -b master --depth=1 && \
+            if [ "$ARCH" = "aarch64" ]; then \
+                [ -f /lib/ld-linux-aarch64.so.1 ] && mv /lib/ld-linux-aarch64.so.1 /lib/ld-linux-aarch64.so.1.bak 2>/dev/null || true; \
+                cp -r libc-blobs/aarch64/lib/* /lib/ 2>/dev/null || true; \
+            elif [ "$ARCH" = "x86_64" ]; then \
+                mkdir -p /lib64; \
+                [ -f /lib64/ld-linux-x86-64.so.2 ] && mv /lib64/ld-linux-x86-64.so.2 /lib64/ld-linux-x86-64.so.2.bak 2>/dev/null || true; \
+                cp -r libc-blobs/x86_64/lib64/* /lib64/ 2>/dev/null || true; \
+                cp -r libc-blobs/x86_64/lib/* /lib/ 2>/dev/null || true; \
+            fi && \
+            rm -rf libc-blobs ;; \
+        *) echo "Skipping libc-blobs for unsupported arch: $ARCH" ;; \
     esac && \
     rm -rf libc-blobs
 
