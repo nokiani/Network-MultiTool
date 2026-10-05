@@ -55,6 +55,9 @@ RUN  apk add --no-cache \
         apache2-utils ethtool git iperf3 lftp mysql-client mtr \
         netcat-openbsd net-snmp-tools nmap nmap-scripts \
         postgresql-client samba-client socat tshark \
+    && apk add --no-cache \
+        --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing \
+        grpcurl \
     &&  rm -rf /var/cache/apk/*
 RUN ARCH=$(uname -m) && \
     case "$ARCH" in \
